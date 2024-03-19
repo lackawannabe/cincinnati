@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cincinnati_1.0.3 - LeafLet Preview</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    #basemapslidercontainer {
+      position: absolute;
+      top: 50px;
+      right: 10px;
+      z-index: 1000;
+    }
+    #basemapslider {
+      font-size: 62.5%;
+      margin: 14px;
+      height: 125px;
+      width: 7px;
+    }
+    #map {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      top: 10px;
+      bottom: 10px;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    $(document).ready(function () {
+      var map = L.map('map').setView([39.112186303420216, -84.47342142111223], 15.5);
+      var baselayer = L.tileLayer('https://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
+        maxZoom: 18,
+        attribution: 'Satellite imagery &copy; Google'
+      }).addTo(map);
+      
+      var mytile = L.tileLayer('file://C:/Users/rdete/Desktop/0_2_Tilemap/Cincinnati_1.0.3/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        tms: true,
+        attribution: 'map data &copy; PGS Group'
+      }).addTo(map);
+      
+      $("#basemapslider").slider({
+        animate: true,
+        value: 1,
+        orientation: "vertical",
+        min: 0,
+        max: 1,
+        step: 0.1,
+        slide: function (event, ui) {
+          mytile.setOpacity(ui.value);
+        }
+      });
+
+      $('#basemapslider').mousedown(function () {
+        map.dragging.disable();
+      });
+
+      $('#basemapslider').mouseup(function () {
+        map.dragging.enable();
+      });
+
+      L.control.layers({ 'Basemap': baselayer }, { 'Cincinnati_1.0.3': mytile }).addTo(map);
+    });
+  </script>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="basemapslidercontainer">
+    <div id="basemapslider"></div>
+  </div>
+</body>
+</html>
